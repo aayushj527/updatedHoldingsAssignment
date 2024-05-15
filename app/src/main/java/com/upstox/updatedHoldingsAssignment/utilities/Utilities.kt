@@ -5,7 +5,6 @@ import android.os.Looper
 import android.widget.Toast
 import com.upstox.updatedHoldingsAssignment.AppClass
 import com.upstox.updatedHoldingsAssignment.data.local.HoldingEntity
-import com.upstox.updatedHoldingsAssignment.domain.model.Holding
 
 fun showToast(text: String) {
     Handler(Looper.getMainLooper()).post {
