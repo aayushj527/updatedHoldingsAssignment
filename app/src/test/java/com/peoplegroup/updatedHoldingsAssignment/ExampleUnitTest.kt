@@ -1,4 +1,4 @@
-package com.upstox.updatedHoldingsAssignment
+package com.peoplegroup.updatedHoldingsAssignment
 
 import org.junit.Test
 

@@ -1,6 +1,5 @@
 package com.upstox.updatedHoldingsAssignment.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -9,7 +8,51 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import com.upstox.updatedHoldingsAssignment.R
+import com.upstox.updatedHoldingsAssignment.ui.theme.dimensions.Dimensions
+import com.upstox.updatedHoldingsAssignment.ui.theme.dimensions.dimen_hdpi
+import com.upstox.updatedHoldingsAssignment.ui.theme.dimensions.dimen_mdpi
+import com.upstox.updatedHoldingsAssignment.ui.theme.dimensions.dimen_xhdpi
+import com.upstox.updatedHoldingsAssignment.ui.theme.dimensions.dimen_xxhdpi
+import com.upstox.updatedHoldingsAssignment.ui.theme.dimensions.dimen_xxxhdpi
+import com.upstox.updatedHoldingsAssignment.ui.theme.fontSizes.FontSize
+import com.upstox.updatedHoldingsAssignment.ui.theme.fontSizes.font_size_hdpi
+import com.upstox.updatedHoldingsAssignment.ui.theme.fontSizes.font_size_mdpi
+import com.upstox.updatedHoldingsAssignment.ui.theme.fontSizes.font_size_xhdpi
+import com.upstox.updatedHoldingsAssignment.ui.theme.fontSizes.font_size_xxhdpi
+import com.upstox.updatedHoldingsAssignment.ui.theme.fontSizes.font_size_xxxhdpi
+
+@Composable
+fun ProvideDimens(
+    dimensions: Dimensions,
+    fontSizes: FontSize,
+    content: @Composable () -> Unit
+) {
+    val dimensionSet = remember { dimensions }
+    val fontSizeSet = remember { fontSizes }
+
+    CompositionLocalProvider(
+        LocalAppDimens provides dimensionSet,
+        LocalAppFontSizes provides fontSizeSet,
+        content = content
+    )
+}
+
+private val LocalAppDimens = staticCompositionLocalOf {
+    dimen_mdpi
+}
+
+private val LocalAppFontSizes = staticCompositionLocalOf {
+    font_size_mdpi
+}
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
@@ -50,9 +93,60 @@ fun UpdatedHoldingsAssignmentTheme(
         else -> LightColorScheme
     }
 
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography,
-        content = content
-    )
+    val configuration = LocalConfiguration.current
+    var dimensions = dimen_mdpi
+    var fontSize = font_size_mdpi
+
+    if (configuration.screenWidthDp <= 160) {
+        dimensions = dimen_mdpi
+        fontSize = font_size_mdpi
+    } else if (configuration.screenWidthDp in (161..240)) {
+        dimensions = dimen_hdpi
+        fontSize = font_size_hdpi
+    } else if (configuration.screenWidthDp in (241..320)) {
+        dimensions = dimen_xhdpi
+        fontSize = font_size_xhdpi
+    } else if (configuration.screenWidthDp in (321..480)) {
+        dimensions = dimen_xxhdpi
+        fontSize = font_size_xxhdpi
+    } else if (configuration.screenWidthDp > 480) {
+        dimensions = dimen_xxxhdpi
+        fontSize = font_size_xxxhdpi
+    }
+
+    ProvideDimens(
+        dimensions = dimensions,
+        fontSizes = fontSize
+    ) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography = Typography,
+            content = content
+        )
+    }
 }
+
+object UpdatedHoldingsAssignmentTheme {
+
+    val dimens: Dimensions
+        @Composable
+        get() = LocalAppDimens.current
+
+    val fontSizes: FontSize
+        @Composable
+        get() = LocalAppFontSizes.current
+}
+
+val Poppins = FontFamily(
+    Font(R.font.poppins_light, FontWeight.Light),
+    Font(R.font.poppins_regular, FontWeight.Normal),
+    Font(R.font.poppins_medium, FontWeight.Medium),
+    Font(R.font.poppins_semibold, FontWeight.SemiBold),
+    Font(R.font.poppins_bold, FontWeight.Bold)
+)
+
+val Roboto = FontFamily(
+    Font(R.font.roboto_bold, FontWeight.Bold),
+    Font(R.font.roboto_regular, FontWeight.Normal),
+    Font(R.font.roboto_medium, FontWeight.Medium)
+)

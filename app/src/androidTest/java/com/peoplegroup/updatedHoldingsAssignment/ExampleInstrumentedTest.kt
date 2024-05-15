@@ -1,4 +1,4 @@
-package com.upstox.updatedHoldingsAssignment
+package com.peoplegroup.updatedHoldingsAssignment
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.upstox.updatedHoldingsAssignment", appContext.packageName)
+        assertEquals("com.peoplegroup.assignmentapp", appContext.packageName)
     }
 }
