@@ -9,5 +9,5 @@ data class HoldingInfo(
     val ltp: Double? = null,
     val avgPrice: Double? = null,
     val close: Double? = null,
-    val netProfitOrLoss: String? = null
+    val netProfitOrLoss: Double? = null
 )

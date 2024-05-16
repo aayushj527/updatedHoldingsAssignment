@@ -1,7 +1,9 @@
 package com.upstox.updatedHoldingsAssignment.utilities
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -17,8 +20,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -26,7 +34,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import com.upstox.updatedHoldingsAssignment.R
 import com.upstox.updatedHoldingsAssignment.domain.model.HoldingInfo
+import com.upstox.updatedHoldingsAssignment.ui.theme.Geyser
 import com.upstox.updatedHoldingsAssignment.ui.theme.LossRed
+import com.upstox.updatedHoldingsAssignment.ui.theme.OsloGray
 import com.upstox.updatedHoldingsAssignment.ui.theme.Poppins
 import com.upstox.updatedHoldingsAssignment.ui.theme.ProfitGreen
 import com.upstox.updatedHoldingsAssignment.ui.theme.Roboto
@@ -35,7 +45,8 @@ import com.upstox.updatedHoldingsAssignment.ui.theme.UpdatedHoldingsAssignmentTh
 @Composable
 fun HoldingListItem(
     modifier: Modifier = Modifier,
-    holdingInfo: HoldingInfo
+    holdingInfo: HoldingInfo,
+    showBottomBorder: Boolean
 ) {
     Column {
         Row(
@@ -70,7 +81,7 @@ fun HoldingListItem(
 
                     Text(
                         modifier = Modifier.padding(top = UpdatedHoldingsAssignmentTheme.dimens.dp20),
-                        text = Constants.CURRENCY_SYMBOL + " " + holdingInfo.ltp.toString(),
+                        text = holdingInfo.ltp.displayPrice(),
                         style = TextStyle(
                             fontSize = UpdatedHoldingsAssignmentTheme.fontSizes.sp16,
                             fontFamily = Roboto
@@ -124,7 +135,7 @@ fun HoldingListItem(
 
                     Text(
                         modifier = Modifier.padding(top = UpdatedHoldingsAssignmentTheme.dimens.dp20),
-                        text = Constants.CURRENCY_SYMBOL + " " + holdingInfo.netProfitOrLoss,
+                        text = holdingInfo.netProfitOrLoss.displayPrice(),
                         style = TextStyle(
                             fontSize = UpdatedHoldingsAssignmentTheme.fontSizes.sp16,
                             fontFamily = Roboto,
@@ -135,7 +146,9 @@ fun HoldingListItem(
             }
         }
 
-        HorizontalDivider(modifier = Modifier.fillMaxWidth())
+        if (showBottomBorder) {
+            HorizontalDivider(modifier = Modifier.fillMaxWidth())
+        }
     }
 }
 
@@ -179,13 +192,79 @@ fun AppTopBar(
         )
 
         VerticalDivider(modifier = Modifier.height(UpdatedHoldingsAssignmentTheme.dimens.dp22))
-        
+
         IconButton(onClick = searchIconClicked) {
             Icon(
                 modifier = Modifier.size(UpdatedHoldingsAssignmentTheme.dimens.dp22),
                 painter = painterResource(id = R.drawable.ic_search),
                 tint = MaterialTheme.colorScheme.background,
                 contentDescription = ContentDescription.SEARCH_ICON
+            )
+        }
+    }
+}
+
+@Composable
+fun HoldingScreenBottomBar(
+    currentValue: String,
+    totalInvestment: String,
+    todayProfitAndLoss: String,
+    totalProfitAndLoss: Double,
+    profitAndLossPercentage: Double
+) {
+    val borderShape = RoundedCornerShape(
+        topStart = UpdatedHoldingsAssignmentTheme.dimens.dp16,
+        topEnd = UpdatedHoldingsAssignmentTheme.dimens.dp16
+    )
+
+    var expanded by remember { mutableStateOf(false) }
+
+    Column(
+        modifier = Modifier
+            .clip(borderShape)
+            .fillMaxWidth()
+            .border(
+                width = UpdatedHoldingsAssignmentTheme.dimens.dp1,
+                color = Geyser,
+                shape = borderShape
+            )
+            .padding(all = UpdatedHoldingsAssignmentTheme.dimens.dp16)
+    ) {
+        AnimatedVisibility(visible = expanded) {
+            Column {
+                HorizontalDivider(modifier = Modifier.padding(vertical = UpdatedHoldingsAssignmentTheme.dimens.dp16))
+            }
+        }
+
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                modifier = Modifier.weight(1f),
+                text = stringResource(id = R.string.profit_and_loss),
+                style = TextStyle(
+                    fontSize = UpdatedHoldingsAssignmentTheme.fontSizes.sp16,
+                    fontFamily = Roboto,
+                    color = OsloGray
+                )
+            )
+
+            IconButton(
+                modifier = Modifier.padding(horizontal = UpdatedHoldingsAssignmentTheme.dimens.dp8),
+                onClick = { expanded = !expanded }
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_down_arrow),
+                    tint = OsloGray,
+                    contentDescription = ""
+                )
+            }
+
+            Text(
+                text = "${totalProfitAndLoss.displayPrice()} (${profitAndLossPercentage.round()}%)",
+                style = TextStyle(
+                    fontSize = UpdatedHoldingsAssignmentTheme.fontSizes.sp16,
+                    fontFamily = Roboto,
+                    color = if (totalProfitAndLoss > 0) ProfitGreen else LossRed
+                )
             )
         }
     }

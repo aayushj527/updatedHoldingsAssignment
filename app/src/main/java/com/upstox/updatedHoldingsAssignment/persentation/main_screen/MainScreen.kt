@@ -28,6 +28,12 @@ import com.upstox.updatedHoldingsAssignment.ui.theme.Poppins
 import com.upstox.updatedHoldingsAssignment.ui.theme.UpdatedHoldingsAssignmentTheme
 import com.upstox.updatedHoldingsAssignment.utilities.AppTopBar
 import com.upstox.updatedHoldingsAssignment.utilities.HoldingListItem
+import com.upstox.updatedHoldingsAssignment.utilities.HoldingScreenBottomBar
+import com.upstox.updatedHoldingsAssignment.utilities.calculateCurrentValue
+import com.upstox.updatedHoldingsAssignment.utilities.calculatePercentage
+import com.upstox.updatedHoldingsAssignment.utilities.calculateTodayProfitAndLoss
+import com.upstox.updatedHoldingsAssignment.utilities.calculateTotalInvestment
+import com.upstox.updatedHoldingsAssignment.utilities.round
 
 @Composable
 fun MainScreen(
@@ -52,6 +58,18 @@ fun MainScreen(
          */
         mainScreenViewModel.holdings.observe(lifecycleOwner) {
             holdingInfoList = it
+
+            val currentValue = calculateCurrentValue(it)
+            val totalInvestment = calculateTotalInvestment(it)
+            val totalProfitAndLoss = currentValue - totalInvestment
+
+            mainScreenViewModel.state = mainScreenViewModel.state.copy(
+                currentValue = currentValue.round(),
+                totalInvestment = totalInvestment.round(),
+                todayProfitAndLoss = calculateTodayProfitAndLoss(it).round(),
+                totalProfitAndLoss = totalProfitAndLoss,
+                profitAndLossPercentage = calculatePercentage(totalProfitAndLoss, totalInvestment)
+            )
         }
     }
 
@@ -60,6 +78,15 @@ fun MainScreen(
             AppTopBar(
                 headingText = stringResource(id = R.string.portfolio),
                 searchIconClicked = {}
+            )
+        },
+        bottomBar = {
+            HoldingScreenBottomBar(
+                currentValue = mainScreenViewModel.state.currentValue,
+                totalInvestment = mainScreenViewModel.state.totalInvestment,
+                todayProfitAndLoss = mainScreenViewModel.state.todayProfitAndLoss,
+                totalProfitAndLoss = mainScreenViewModel.state.totalProfitAndLoss,
+                profitAndLossPercentage = mainScreenViewModel.state.profitAndLossPercentage
             )
         }
     ) {
@@ -89,7 +116,8 @@ fun MainScreen(
                 items(items = holdingInfoList) { item ->
                     HoldingListItem(
                         modifier = Modifier.fillMaxWidth(),
-                        holdingInfo = item
+                        holdingInfo = item,
+                        showBottomBorder = item != holdingInfoList.last()
                     )
                 }
             }

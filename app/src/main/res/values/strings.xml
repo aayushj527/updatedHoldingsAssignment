@@ -7,4 +7,8 @@
     <string name="ltp">LTP:</string>
     <string name="p_and_l">P&amp;L:</string>
     <string name="portfolio">Portfolio</string>
+    <string name="total_investment">Total investment*</string>
+    <string name="current_value">Current value*</string>
+    <string name="profit_and_loss">Profit &amp; Loss*</string>
+    <string name="today_profit_and_loss">Today\'s Profit &amp; Loss*</string>
 </resources>
