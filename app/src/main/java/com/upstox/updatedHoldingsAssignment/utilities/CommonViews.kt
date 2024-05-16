@@ -1,16 +1,26 @@
 package com.upstox.updatedHoldingsAssignment.utilities
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -126,5 +136,57 @@ fun HoldingListItem(
         }
 
         HorizontalDivider(modifier = Modifier.fillMaxWidth())
+    }
+}
+
+@Composable
+fun AppTopBar(
+    headingText: String,
+    searchIconClicked: () -> Unit
+) {
+    Row(
+        Modifier
+            .background(MaterialTheme.colorScheme.primary)
+            .padding(
+                horizontal = UpdatedHoldingsAssignmentTheme.dimens.dp16,
+                vertical = UpdatedHoldingsAssignmentTheme.dimens.dp8
+            )
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.ic_user),
+            contentDescription = ContentDescription.USER_PROFILE_ICON
+        )
+
+        Text(
+            modifier = Modifier.padding(start = UpdatedHoldingsAssignmentTheme.dimens.dp16),
+            text = headingText,
+            style = TextStyle(
+                fontSize = UpdatedHoldingsAssignmentTheme.fontSizes.sp20,
+                fontFamily = Poppins,
+                color = MaterialTheme.colorScheme.background
+            )
+        )
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        Icon(
+            modifier = Modifier.padding(end = UpdatedHoldingsAssignmentTheme.dimens.dp8),
+            painter = painterResource(id = R.drawable.ic_up_down_arrow),
+            tint = MaterialTheme.colorScheme.background,
+            contentDescription = ContentDescription.UP_DOWN_ARROW_ICON
+        )
+
+        VerticalDivider(modifier = Modifier.height(UpdatedHoldingsAssignmentTheme.dimens.dp22))
+        
+        IconButton(onClick = searchIconClicked) {
+            Icon(
+                modifier = Modifier.size(UpdatedHoldingsAssignmentTheme.dimens.dp22),
+                painter = painterResource(id = R.drawable.ic_search),
+                tint = MaterialTheme.colorScheme.background,
+                contentDescription = ContentDescription.SEARCH_ICON
+            )
+        }
     }
 }
