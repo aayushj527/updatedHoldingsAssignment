@@ -64,9 +64,9 @@ fun MainScreen(
             val totalProfitAndLoss = currentValue - totalInvestment
 
             mainScreenViewModel.state = mainScreenViewModel.state.copy(
-                currentValue = currentValue.round(),
-                totalInvestment = totalInvestment.round(),
-                todayProfitAndLoss = calculateTodayProfitAndLoss(it).round(),
+                currentValue = currentValue,
+                totalInvestment = totalInvestment,
+                todayProfitAndLoss = calculateTodayProfitAndLoss(it),
                 totalProfitAndLoss = totalProfitAndLoss,
                 profitAndLossPercentage = calculatePercentage(totalProfitAndLoss, totalInvestment)
             )

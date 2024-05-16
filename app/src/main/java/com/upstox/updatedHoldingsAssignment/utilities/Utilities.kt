@@ -63,7 +63,7 @@ fun calculatePercentage(numerator: Double?, denominator: Double?): Double {
 }
 
 fun Double.displayPrice(): String {
-    return (if (this < 0) "-" else "") + Constants.CURRENCY_SYMBOL + this.absoluteValue.round().commaSeparatedValue()
+    return (if (this < 0) "-" else "") + Constants.CURRENCY_SYMBOL + " " + this.absoluteValue.round().commaSeparatedValue()
 }
 
 fun String.commaSeparatedValue(): String {

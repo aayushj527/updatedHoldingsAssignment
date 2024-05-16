@@ -27,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -206,9 +207,9 @@ fun AppTopBar(
 
 @Composable
 fun HoldingScreenBottomBar(
-    currentValue: String,
-    totalInvestment: String,
-    todayProfitAndLoss: String,
+    currentValue: Double,
+    totalInvestment: Double,
+    todayProfitAndLoss: Double,
     totalProfitAndLoss: Double,
     profitAndLossPercentage: Double
 ) {
@@ -228,18 +229,69 @@ fun HoldingScreenBottomBar(
                 color = Geyser,
                 shape = borderShape
             )
-            .padding(all = UpdatedHoldingsAssignmentTheme.dimens.dp16)
+            .padding(horizontal = UpdatedHoldingsAssignmentTheme.dimens.dp16)
     ) {
         AnimatedVisibility(visible = expanded) {
             Column {
-                HorizontalDivider(modifier = Modifier.padding(vertical = UpdatedHoldingsAssignmentTheme.dimens.dp16))
+                HoldingScreenBottomBarRowItem(
+                    modifier = Modifier.padding(top = UpdatedHoldingsAssignmentTheme.dimens.dp16),
+                    keyText = stringResource(id = R.string.current_value),
+                    valueText = currentValue.displayPrice()
+                )
+
+                HoldingScreenBottomBarRowItem(
+                    modifier = Modifier.padding(top = UpdatedHoldingsAssignmentTheme.dimens.dp16),
+                    keyText = stringResource(id = R.string.total_investment),
+                    valueText = totalInvestment.displayPrice()
+                )
+
+                HoldingScreenBottomBarRowItem(
+                    modifier = Modifier.padding(top = UpdatedHoldingsAssignmentTheme.dimens.dp16),
+                    keyText = stringResource(id = R.string.today_profit_and_loss),
+                    valueText = todayProfitAndLoss.displayPrice(),
+                    valueTextColor = if (todayProfitAndLoss > 0) ProfitGreen else LossRed
+                )
+
+                HorizontalDivider(modifier = Modifier.padding(vertical = UpdatedHoldingsAssignmentTheme.dimens.dp8))
             }
         }
 
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        HoldingScreenBottomBarRowItem(
+            keyText = stringResource(id = R.string.profit_and_loss),
+            valueText = "${totalProfitAndLoss.displayPrice()} (${profitAndLossPercentage.round()}%)",
+            valueTextColor = if (totalProfitAndLoss > 0) ProfitGreen else LossRed,
+            additionalComposable = {
+                IconButton(onClick = { expanded = !expanded }) {
+                    Icon(
+                        modifier = Modifier.rotate(if (expanded) 0f else 180f),
+                        painter = painterResource(id = R.drawable.ic_down_arrow),
+                        tint = OsloGray,
+                        contentDescription = ContentDescription.EXPAND_ARROW_ICON
+                    )
+                }
+            }
+        )
+    }
+}
+
+@Composable
+fun HoldingScreenBottomBarRowItem(
+    modifier: Modifier = Modifier,
+    keyText: String,
+    valueText: String,
+    valueTextColor: Color? = null,
+    additionalComposable: @Composable (() -> Unit)? = null
+) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Row(
+            modifier = Modifier.weight(1f),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Text(
-                modifier = Modifier.weight(1f),
-                text = stringResource(id = R.string.profit_and_loss),
+                text = keyText,
                 style = TextStyle(
                     fontSize = UpdatedHoldingsAssignmentTheme.fontSizes.sp16,
                     fontFamily = Roboto,
@@ -247,25 +299,16 @@ fun HoldingScreenBottomBar(
                 )
             )
 
-            IconButton(
-                modifier = Modifier.padding(horizontal = UpdatedHoldingsAssignmentTheme.dimens.dp8),
-                onClick = { expanded = !expanded }
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_down_arrow),
-                    tint = OsloGray,
-                    contentDescription = ""
-                )
-            }
-
-            Text(
-                text = "${totalProfitAndLoss.displayPrice()} (${profitAndLossPercentage.round()}%)",
-                style = TextStyle(
-                    fontSize = UpdatedHoldingsAssignmentTheme.fontSizes.sp16,
-                    fontFamily = Roboto,
-                    color = if (totalProfitAndLoss > 0) ProfitGreen else LossRed
-                )
-            )
+            additionalComposable?.invoke()
         }
+
+        Text(
+            text = valueText,
+            style = TextStyle(
+                fontSize = UpdatedHoldingsAssignmentTheme.fontSizes.sp16,
+                fontFamily = Roboto,
+                color = valueTextColor ?: MaterialTheme.colorScheme.onBackground
+            )
+        )
     }
 }
