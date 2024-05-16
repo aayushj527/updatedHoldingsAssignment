@@ -1,8 +1,8 @@
 package com.upstox.updatedHoldingsAssignment.data.repository
 
 import android.util.Log
-import com.upstox.updatedHoldingsAssignment.data.local.HoldingsDao
 import com.upstox.updatedHoldingsAssignment.data.local.HoldingEntity
+import com.upstox.updatedHoldingsAssignment.data.local.HoldingsDao
 import com.upstox.updatedHoldingsAssignment.data.mapper.toHoldingEntity
 import com.upstox.updatedHoldingsAssignment.data.mapper.toHoldingInfo
 import com.upstox.updatedHoldingsAssignment.data.remote.HoldingService
