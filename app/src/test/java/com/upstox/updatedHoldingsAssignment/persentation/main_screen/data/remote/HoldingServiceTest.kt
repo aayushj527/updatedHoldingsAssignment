@@ -1,4 +1,4 @@
-package com.peoplegroup.updatedHoldingsAssignment.data.remote
+package com.upstox.updatedHoldingsAssignment.persentation.main_screen.data.remote
 
 import com.upstox.updatedHoldingsAssignment.data.remote.HoldingService
 import com.upstox.updatedHoldingsAssignment.domain.model.Holding

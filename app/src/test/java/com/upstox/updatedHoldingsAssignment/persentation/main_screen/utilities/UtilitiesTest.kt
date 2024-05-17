@@ -1,4 +1,4 @@
-package com.peoplegroup.updatedHoldingsAssignment.utilities
+package com.upstox.updatedHoldingsAssignment.persentation.main_screen.utilities
 
 import com.upstox.updatedHoldingsAssignment.data.local.HoldingEntity
 import com.upstox.updatedHoldingsAssignment.data.mapper.toHoldingInfo

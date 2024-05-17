@@ -16,7 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainScreenViewModel @Inject constructor(
-    val holdingRepository: HoldingRepository
+    private val holdingRepository: HoldingRepository
 ) : ViewModel() {
     var state by mutableStateOf(MainScreenState())
 
