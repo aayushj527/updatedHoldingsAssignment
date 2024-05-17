@@ -1,4 +1,4 @@
-package com.peoplegroup.updatedHoldingsAssignment
+package com.upstox.updatedHoldingsAssignment.persentation.main_screen
 
 import org.junit.Test
 
