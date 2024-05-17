@@ -6,7 +6,6 @@ import android.widget.Toast
 import com.upstox.updatedHoldingsAssignment.AppClass
 import com.upstox.updatedHoldingsAssignment.data.local.HoldingEntity
 import com.upstox.updatedHoldingsAssignment.domain.model.HoldingInfo
-import java.lang.StringBuilder
 import kotlin.math.absoluteValue
 
 fun showToast(text: String) {
