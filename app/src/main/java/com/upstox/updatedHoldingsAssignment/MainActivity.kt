@@ -21,6 +21,10 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        /**
+         *  Registering the networkChangeReceiver.
+         */
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             registerReceiver(
                 networkChangeReceiver,
@@ -45,9 +49,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    MainScreen(
-                        mainScreenViewModel = hiltViewModel()
-                    )
+                    MainScreen(mainScreenViewModel = hiltViewModel())
                 }
             }
         }

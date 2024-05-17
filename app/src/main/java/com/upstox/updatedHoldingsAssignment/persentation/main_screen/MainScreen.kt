@@ -88,13 +88,15 @@ fun MainScreen(
             )
         },
         bottomBar = {
-            HoldingScreenBottomBar(
-                currentValue = mainScreenViewModel.state.currentValue,
-                totalInvestment = mainScreenViewModel.state.totalInvestment,
-                todayProfitAndLoss = mainScreenViewModel.state.todayProfitAndLoss,
-                totalProfitAndLoss = mainScreenViewModel.state.totalProfitAndLoss,
-                profitAndLossPercentage = mainScreenViewModel.state.profitAndLossPercentage
-            )
+            mainScreenViewModel.state.let {
+                HoldingScreenBottomBar(
+                    currentValue = it.currentValue,
+                    totalInvestment = it.totalInvestment,
+                    todayProfitAndLoss = it.todayProfitAndLoss,
+                    totalProfitAndLoss = it.totalProfitAndLoss,
+                    profitAndLossPercentage = it.profitAndLossPercentage
+                )
+            }
         }
     ) {
         Column(
@@ -102,6 +104,9 @@ fun MainScreen(
                 .fillMaxSize()
                 .padding(it)
         ) {
+            /**
+             *  "HOLDINGS" heading text.
+             */
             Text(
                 modifier = Modifier
                     .padding(all = UpdatedHoldingsAssignmentTheme.dimens.dp16)
@@ -115,6 +120,10 @@ fun MainScreen(
                 )
             )
 
+            /**
+             *  "No internet" message will be displayed when user's device is not
+             *  connected to internet.
+             */
             if (connectionState is ConnectionState.Unavailable) {
                 Text(
                     modifier = Modifier
@@ -135,6 +144,10 @@ fun MainScreen(
                 )
             }
 
+            /**
+             *  If holding list is empty, a circular loader will be displayed till
+             *  the API is being called.
+             */
             if (holdingInfoList.isEmpty() && mainScreenViewModel.state.loading) {
                 Box(modifier = Modifier.fillMaxSize()) {
                     CircularProgressIndicator(
@@ -144,6 +157,9 @@ fun MainScreen(
                     )
                 }
             } else {
+                /**
+                 *  List of all the holdings.
+                 */
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxWidth()
