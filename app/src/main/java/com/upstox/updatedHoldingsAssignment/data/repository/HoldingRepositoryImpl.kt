@@ -32,6 +32,7 @@ class HoldingRepositoryImpl @Inject constructor(
 
             val remoteData = try {
                 val response = holdingService.getAllHoldings()
+                emit(Resource.Success())
                 response.body()?.data?.userHolding?.map { it.toHoldingEntity() }
             } catch (e: NoConnectivityException) {
                 emit(Resource.Error(e.message))
@@ -41,8 +42,6 @@ class HoldingRepositoryImpl @Inject constructor(
                 Log.d("EXCEPTION_LOGGING",e.message.toString())
                 null
             }
-
-            emit(Resource.Success())
 
             /**
              *  If data fetched from server is non-null, then it will be stored in local DB.

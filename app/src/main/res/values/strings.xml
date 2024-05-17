@@ -11,4 +11,5 @@
     <string name="current_value">Current value*</string>
     <string name="profit_and_loss">Profit &amp; Loss*</string>
     <string name="today_profit_and_loss">Today\'s Profit &amp; Loss*</string>
+    <string name="no_internet_message">No internet connection!! Please connect to an active internet connection to fetch updated data.</string>
 </resources>
