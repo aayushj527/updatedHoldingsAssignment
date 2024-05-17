@@ -1,11 +1,14 @@
 package com.upstox.updatedHoldingsAssignment.persentation.main_screen
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,15 +27,18 @@ import androidx.compose.ui.text.style.TextAlign
 import com.upstox.updatedHoldingsAssignment.AppClass
 import com.upstox.updatedHoldingsAssignment.R
 import com.upstox.updatedHoldingsAssignment.domain.model.HoldingInfo
+import com.upstox.updatedHoldingsAssignment.ui.theme.LossRed
 import com.upstox.updatedHoldingsAssignment.ui.theme.Poppins
 import com.upstox.updatedHoldingsAssignment.ui.theme.UpdatedHoldingsAssignmentTheme
 import com.upstox.updatedHoldingsAssignment.utilities.AppTopBar
+import com.upstox.updatedHoldingsAssignment.utilities.ConnectionState
 import com.upstox.updatedHoldingsAssignment.utilities.HoldingListItem
 import com.upstox.updatedHoldingsAssignment.utilities.HoldingScreenBottomBar
 import com.upstox.updatedHoldingsAssignment.utilities.calculateCurrentValue
 import com.upstox.updatedHoldingsAssignment.utilities.calculatePercentage
 import com.upstox.updatedHoldingsAssignment.utilities.calculateTodayProfitAndLoss
 import com.upstox.updatedHoldingsAssignment.utilities.calculateTotalInvestment
+import com.upstox.updatedHoldingsAssignment.utilities.getCurrentConnectivityState
 
 @Composable
 fun MainScreen(
@@ -40,6 +46,7 @@ fun MainScreen(
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
     var holdingInfoList by remember { mutableStateOf(listOf<HoldingInfo>()) }
+    var connectionState by remember { mutableStateOf(getCurrentConnectivityState()) }
     
     LaunchedEffect(key1 = Unit) {
         /**
@@ -47,6 +54,7 @@ fun MainScreen(
          *  connection is restored.
          */
         AppClass.connectivityState.observe(lifecycleOwner) {
+            connectionState = it
             if (mainScreenViewModel.shouldRetry(it)) {
                 mainScreenViewModel.getHoldingDataFromRemote()
             }
@@ -106,18 +114,49 @@ fun MainScreen(
                     textAlign = TextAlign.Center
                 )
             )
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = UpdatedHoldingsAssignmentTheme.dimens.dp16),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                items(items = holdingInfoList) { item ->
-                    HoldingListItem(
-                        modifier = Modifier.fillMaxWidth(),
-                        holdingInfo = item,
-                        showBottomBorder = item != holdingInfoList.last()
+
+            if (connectionState is ConnectionState.Unavailable) {
+                Text(
+                    modifier = Modifier
+                        .padding(
+                            start = UpdatedHoldingsAssignmentTheme.dimens.dp16,
+                            end = UpdatedHoldingsAssignmentTheme.dimens.dp16,
+                            bottom = UpdatedHoldingsAssignmentTheme.dimens.dp16
+                        )
+                        .fillMaxWidth(),
+                    text = stringResource(id = R.string.no_internet_message),
+                    style = TextStyle(
+                        fontSize = UpdatedHoldingsAssignmentTheme.fontSizes.sp16,
+                        fontWeight = FontWeight.SemiBold,
+                        fontFamily = Poppins,
+                        textAlign = TextAlign.Center,
+                        color = LossRed
                     )
+                )
+            }
+
+            if (holdingInfoList.isEmpty() && mainScreenViewModel.state.loading) {
+                Box(modifier = Modifier.fillMaxSize()) {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .size(UpdatedHoldingsAssignmentTheme.dimens.dp22)
+                    )
+                }
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = UpdatedHoldingsAssignmentTheme.dimens.dp16),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    items(items = holdingInfoList) { item ->
+                        HoldingListItem(
+                            modifier = Modifier.fillMaxWidth(),
+                            holdingInfo = item,
+                            showBottomBorder = item != holdingInfoList.last()
+                        )
+                    }
                 }
             }
         }
