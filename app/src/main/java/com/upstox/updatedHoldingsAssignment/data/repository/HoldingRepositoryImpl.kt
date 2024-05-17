@@ -1,6 +1,5 @@
 package com.upstox.updatedHoldingsAssignment.data.repository
 
-import android.util.Log
 import com.upstox.updatedHoldingsAssignment.data.local.HoldingEntity
 import com.upstox.updatedHoldingsAssignment.data.local.HoldingsDao
 import com.upstox.updatedHoldingsAssignment.data.mapper.toHoldingEntity
@@ -24,7 +23,7 @@ class HoldingRepositoryImpl @Inject constructor(
 ) : HoldingRepository {
 
     /**
-     *  To fetch person data from remote API.
+     *  To fetch holdings data from remote API.
      */
     override suspend fun getHoldingDataFromRemote(): Flow<Resource<List<HoldingInfo>>> {
         return flow {
@@ -39,7 +38,6 @@ class HoldingRepositoryImpl @Inject constructor(
                 null
             } catch (e: Exception) {
                 emit(Resource.Error("Couldn't load data"))
-                Log.d("EXCEPTION_LOGGING",e.message.toString())
                 null
             }
 
