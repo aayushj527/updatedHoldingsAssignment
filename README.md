@@ -7,3 +7,6 @@ External libraries used -
 - Dagger hilt : For dependency management
 - MockWebServer : For unit testing of API
 - Room : For storing data locally
+
+For screen recording of the app, please refer to the following link -
+https://github.com/aayushj527/updatedHoldingsAssignment/blob/main/sample/Holdings_app_recording.mp4
