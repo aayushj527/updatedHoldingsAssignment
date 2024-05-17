@@ -6,8 +6,7 @@ import android.widget.Toast
 import com.upstox.updatedHoldingsAssignment.AppClass
 import com.upstox.updatedHoldingsAssignment.data.local.HoldingEntity
 import com.upstox.updatedHoldingsAssignment.domain.model.HoldingInfo
-import java.text.NumberFormat
-import java.util.Locale
+import java.lang.StringBuilder
 import kotlin.math.absoluteValue
 
 fun showToast(text: String) {
@@ -62,6 +61,11 @@ fun calculatePercentage(numerator: Double?, denominator: Double?): Double {
     return (numerator?.div((denominator ?: return 0.0)))?.times(100) ?: 0.0
 }
 
+fun splitStringInTwos(string: String): String {
+    return (if (string.length - 2 > 0) splitStringInTwos(string.take(string.length - 2)) else return string) +
+            "," + string.takeLast(2)
+}
+
 fun Double.displayPrice(): String {
     return (if (this < 0) "-" else "") + Constants.CURRENCY_SYMBOL + " " + this.absoluteValue.round().commaSeparatedValue()
 }
@@ -69,9 +73,19 @@ fun Double.displayPrice(): String {
 fun String.commaSeparatedValue(): String {
     val amountArray = this.split(".")
 
-    return "${
-        NumberFormat.getNumberInstance(Locale("hi", "IN")).format(amountArray[0].toLong())
-    }.${amountArray[1]}"
+    val csvBuilder = StringBuilder()
+
+    val startIndex = amountArray[0].length - 3
+
+    if (startIndex > 0) {
+        csvBuilder.append(splitStringInTwos(amountArray[0].substring(0, startIndex)) +"," + amountArray[0].substring(startIndex))
+    } else {
+        csvBuilder.append(amountArray[0])
+    }
+
+    csvBuilder.append(".${amountArray[1]}")
+
+    return csvBuilder.toString()
 }
 
 fun Double.round(decimals: Int = 2): String = "%.${decimals}f".format(this)

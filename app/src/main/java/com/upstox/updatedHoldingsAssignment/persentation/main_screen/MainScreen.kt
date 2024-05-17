@@ -33,7 +33,6 @@ import com.upstox.updatedHoldingsAssignment.utilities.calculateCurrentValue
 import com.upstox.updatedHoldingsAssignment.utilities.calculatePercentage
 import com.upstox.updatedHoldingsAssignment.utilities.calculateTodayProfitAndLoss
 import com.upstox.updatedHoldingsAssignment.utilities.calculateTotalInvestment
-import com.upstox.updatedHoldingsAssignment.utilities.round
 
 @Composable
 fun MainScreen(
